@@ -80,37 +80,11 @@ const getCityCoordinates = () => {
     })
 }
 
-const getUserCoordinates = () => {
-    navigator.geolocation.getCurrentPosition(
-        position => {
-            const { latitude, longitude} = position.coords; // Get coordinates of user location
-            const REVERSE_GEOCODING_URL = `http://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${API_KEY}`;
-            // Get city name from coordinates using reverse geocoding API
-            fetch(REVERSE_GEOCODING_URL).then(res => res.json()).then(data => {
-                const { name } = data[0];
-                getWeatherDetails(name, latitude, longitude);
-            }).catch(() => {
-                alert("An error occurred while fetching the city");
-            })
-        },
-        error => { //Show alert if user denied the location permission
-            if(error.code === error.PERMISSION_DENIED) {
-                alert("Geolocation request denied. Please reset location permission to grant access again.");
-            }
-        }
-    );
-}
-
-function storeCity() {
-    const city = cityInput.value.trim();
-    if(!city) return;
+$(".search-btn").click(function () {
+    var id = $(".search-btn").siblings(".city-input").val();
+    var city = $(".search-btn").siblings(".city-input").val();
     console.log(city);
-    localStorage.setItem("city", JSON.stringify(cityInput));
-    console.log();
-}
-
-searchButton.addEventListener("click", getCityCoordinates); {
-   storeCity();
-}
-locationButton.addEventListener("click", getUserCoordinates);
+    getCityCoordinates();
+    localStorage.setItem(id, city);
+});
 cityInput.addEventListener("keyup", e => e.key === "Enter" && getCityCoordinates());
